@@ -1,0 +1,92 @@
+* {
+	font-family:"Open Sans", sans-serif;
+	font-size: 12px;
+
+}
+
+/* create-invoice.php */
+
+#Title {
+	font-size: 22px;
+	font-weight: bolder;
+}
+	
+#Main {
+	background-color: rgb(201,201,201);
+	border-radius: 15px;
+	width: 23%;
+	padding: 15px;
+	margin-left: auto;
+	margin-right: auto;
+	min-width: 420px;
+}
+
+#FirstName,#LastName {
+	width: 49.5%;
+}
+
+#Email {
+	bottom: 20px;
+	width: 99.8%;
+}
+
+#PriceTotals {
+	position: relative;
+	left: 75%;
+}
+
+#Stock {
+	background-color: rgb(235,236,228);
+	border-radius: 5px;
+}
+
+#DateDisplay,img.ui-datepicker-trigger {
+	position: relative;
+	left: 51%;
+}
+
+td.DisplayName {
+	table-layout: fixed;
+	width: 77%;
+}
+
+div.ui-datepicker {
+	font-size: 12px;
+}
+
+/* get-started.php */
+
+body#GetStartedPage {
+	background-color: #ECF0F1;
+}
+
+#GetStartedTitleText {
+	font-size: 72px;
+	text-align: center;
+	margin-top: 4%;
+}
+
+
+.svg-book {
+	height: auto;
+	float: left;
+	left: 400px;
+	width: 340px;
+	margin-top: -30px;
+}
+
+.svg-scale {
+	height: auto;
+	float: right;
+	right: 27%;
+	width: 280px;
+	margin-top: 10px;
+}
+
+.GetStartedIcons {
+	position: absolute;
+}
+
+#GetStartedText {
+	
+}
