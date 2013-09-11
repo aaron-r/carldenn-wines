@@ -1,22 +1,23 @@
 <?
 
-// --------------------TO-DO LIST--------------------
-// x. Auto-calculate total cost of stock when Qty is changed
-// x. Auto-calculate sub-totals/GST/Total - * revist with Phill *
-// x. Ensure today's date appears by default
-// 4. Submit an invoice successfully to SQL
-// 4a. <Error check> if NO first or surname is present OR if nothing is purchased
-// 5. Submit a draft successfully to SQL (un-paid)
-// 6. Create animated confirmation of invoice being submitted successfully
-// 7. Create printable invoice (seperate link) which fits A4 page
-// --------------------------------------------------
-// 
-// Searchbox/Dropdown to select Exisiting Customers
-// Limit QTY field to 1 numerical digit.
-// Check if QTY field is blank, if so: clear TOTAL field
-// Restrict numerical fields to only be able to use digits
-//
-// --------------------------------------------------
+// --------------------TO DO--------------------
+// [TECH] 	- Submit an invoice successfully to database
+// [TECH] 	- ERROR CHECK: if NO name is present OR if nothing has been purchased
+// [TECH] 	- Submit a draft successfully to database (un-paid)
+// [TECH] 	- Create confirmation when invoice is submitted (Prompt: Print invoice / Create another invoice )
+// [TECH] 	- Create printable invoice (seperate link) which fits A4 page
+// [TECH] 	- Auto-complete search for either First or Surname from database (typeahead.js w/ JSON results from SQLite)
+// [BUG] 	- Limit the QTY field to 1 whole digit
+// [BUG] 	- Check if QTY field is blank, if so: clear the TOTAL field
+// [BUG] 	- Restrict numerical fields to only accept digits
+// [UI] 	- Increase font size for watermark
+// [UI]		- Lay out the following fields: 'Sub Total' , 'GST' , 'Total'
+// [UI]		- When submitting, prompt for 'Has this invoice been paid yet?' (slide down animation)
+// [UI]		- Create flat-style button for submitting the invoice
+// [UI]		- Lay out 'Adjust your stock' button at top-right of the page
+// [UI]		- Light-grey hightlight when hovering over stock items
+// [TECH]	- Ensure IE10+ compatibility
+// ---------------------------------------------
 
 date_default_timezone_set('Australia/Perth');
 $TodayDate = date('d/m/Y');
@@ -37,9 +38,10 @@ foreach($result as $row){
 <html>
 <head>
 
-<link rel="stylesheet" type="text/css" href="css/style.css">
+<title>Carldenn Wines</title>
+<link rel="stylesheet" href="css/style.css" type="text/css">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.2.custom.css">
+<link rel="stylesheet" href="css/datepicker/flat.css" type='text/css'>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/jquery.watermark.min.js"></script>
@@ -49,15 +51,14 @@ foreach($result as $row){
 $(function() {
 	$("#DateDisplay").datepicker({ 
 	showOn: "button",
-	buttonImage: "img/calendar.png",
+	buttonImage: "img/appbar.calendar.svg",
 	buttonImageOnly: true,
 	autoSize: true,
 	dateFormat: 'dd/mm/yy',
 	});
 	
-	$("#FirstName").watermark("First Name");
-	$("#LastName").watermark("Surname");
-	$("#Email").watermark("E-mail Address");
+	$("#CustomerName").watermark(" Customer's name");
+	$("#CustomerEmail").watermark(" Customer's e-mail address");
 });
 
 function gather() {
@@ -79,24 +80,23 @@ function gather() {
 
 </head>
 
-<body>
+<body id="CreateInvoice">
 <form method="post" action="" id="MainForm">
 
-<div id="Main">
-<span id="Title">Tax Invoice</span>
+<div id="Content">
 
-<input type="text" id="DateDisplay" name="Date" value="<? echo $TodayDate; ?>"> <p>
+<span id="Title">Carldenn Wines</span>
+<input type="text" id="DateDisplay" name="Date" value="<? echo $TodayDate; ?>"> 
 
-<input type="text" name="FirstName" id="FirstName"> 
-<input type="text" name="LastName" id="LastName"> <br>
-<input type="text" name="Email" id="Email"> <p>
+<input type="text" name="CustomerName" id="CustomerName"> 
+<input type="text" name="CustomerEmail" id="CustomerEmail">
 
 <table border=0 id="Stock">
 
 <td class="HeaderDisplayName"></td>
-<td class="HeaderQty">Qty</td>
-<td class="HeaderSell">Sell</td>
-<td class="HeaderTotal">Total</td>
+<td class="HeaderQty">QTY</td>
+<td class="HeaderSell">SELL</td>
+<td class="HeaderTotal">TOTAL</td>
 
 <? 
 
@@ -104,10 +104,10 @@ function gather() {
 foreach($ProductID as $value) {
 	echo '
 	<tr>
-	<td class="DisplayName"> <b>'. $DisplayName[$CounterDisplay] .'</b> </td>
-	<td> <input type="text" class="Quantity" name="Qty_'.$ProductID[$CounterDisplay].'" id="Qty_'.$ProductID[$CounterDisplay].'" size=1 /> </td>
-	<td> <input type="text" class="Sell" name="Sell_'.$ProductID[$CounterDisplay].'" id="Sell_'.$ProductID[$CounterDisplay].'" size=3 value='. $SellPrice[$CounterDisplay] .' /> </td>
-	<td> <input type="text" class="Total" name="Total_'.$ProductID[$CounterDisplay].'" id="Total_'.$ProductID[$CounterDisplay].'" size=3 /> </td>
+	<td class="DisplayName"> '. $DisplayName[$CounterDisplay] .' </td>
+	<td> <input type="text" class="Quantity" name="Qty_'.$ProductID[$CounterDisplay].'" id="Qty_'.$ProductID[$CounterDisplay].'" size=4/> </td>
+	<td> <input type="text" class="Sell" name="Sell_'.$ProductID[$CounterDisplay].'" id="Sell_'.$ProductID[$CounterDisplay].'" size=4 value='. $SellPrice[$CounterDisplay] .' /> </td>
+	<td> <input type="text" class="Total" name="Total_'.$ProductID[$CounterDisplay].'" id="Total_'.$ProductID[$CounterDisplay].'" size=8 /> </td>
 	</tr>';
 	$CounterDisplay++;
 }
@@ -149,32 +149,8 @@ $('.Quantity, .Sell').keyup(function() {
 </script>
 
 </table>
-<p>
 
-<table border=0 id="PriceTotals">
-
-<tr>
-<td> Sub Total: </td>
-<td> <input type="text" id="SubTotal" name="SubTotal" size=3 /> </td>
-</tr>
-<tr>
-<td> GST: </td> 
-<td> <input type="text" id="GST" name="GST"  size=3 /> </td>
-</tr>
-<tr>
-<td>Total: </td>
-<td> <input type="text" id="Total" name="Total" size=3 /> </td>
-</tr>
-<tr>
-<td>Paid? </td>
-<td> <input type="checkbox" id="Paid" name="Paid"> </td>
-</tr>
-
-</table>
-
-<!-- <input type="submit" name="submit" value="Submit Invoice" /> -->
-
-<input id="ClickMe" type="button" value="Gather!" onclick="gather()" />
+<div id="SubmitInvoice" onclick="gather()">CREATE AN INVOICE</div>
 
 </form>
 

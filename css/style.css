@@ -1,92 +1,108 @@
 * {
 	font-family:"Open Sans", sans-serif;
 	font-size: 12px;
-
 }
 
-/* create-invoice.php */
+/* ----- create-invoice.php ----- */
 
-#Title {
-	font-size: 22px;
-	font-weight: bolder;
+body#CreateInvoice {
+	background-color: #ECF0F1
 }
 	
-#Main {
-	background-color: rgb(201,201,201);
-	border-radius: 15px;
-	width: 23%;
-	padding: 15px;
+/* Header */
+
+#Content {
+	width: 20px;
+	min-width: 650px;
 	margin-left: auto;
 	margin-right: auto;
-	min-width: 420px;
+	margin-top: 2%;
 }
 
-#FirstName,#LastName {
-	width: 49.5%;
+#Title {
+	font-size: 72px;
 }
 
-#Email {
-	bottom: 20px;
-	width: 99.8%;
+#SubHeader {
+	margin-top: -15px;
+	margin-bottom: 20px;
+	text-align: center;
+	font-size: 16px;
 }
+
+#DateDisplay {
+	position: relative;
+	left: 5%;
+}
+
+img.ui-datepicker-trigger {
+	position: relative;
+	left: 5%;
+	width: 24px;
+	margin-bottom: -6px;
+}
+
+img.ui-datepicker-trigger:hover {
+	cursor: hand;
+	cursor: pointer;
+}
+
+
+div.ui-datepicker {
+	font-size: 12px;
+}
+
+#CustomerName, #CustomerEmail {
+	width: 100%;
+	border: 1px;
+	border-style: solid;
+	border-color: #95A5A6;
+	font-size: 16px;
+}
+
+#CustomerName {
+	height: 40px;
+}
+
+#CustomerEmail {
+	height: 30px;
+	margin-top: 4px;
+	margin-bottom: 2%;
+}
+
+/* Content */
 
 #PriceTotals {
 	position: relative;
 	left: 75%;
 }
 
-#Stock {
-	background-color: rgb(235,236,228);
-	border-radius: 5px;
-}
-
-#DateDisplay,img.ui-datepicker-trigger {
-	position: relative;
-	left: 51%;
-}
-
 td.DisplayName {
 	table-layout: fixed;
-	width: 77%;
+	width: 80%;
+	font-size: 18px;
+	border: 0px;
 }
 
-div.ui-datepicker {
-	font-size: 12px;
-}
+/* Footer */
 
-/* get-started.php */
-
-body#GetStartedPage {
-	background-color: #ECF0F1;
-}
-
-#GetStartedTitleText {
-	font-size: 72px;
+#SubmitInvoice {
+	background-color: #16a085;
+	color: #ecf0f1;
+	font-size: 28px;
+	font-weight: bold;
 	text-align: center;
-	margin-top: 4%;
-}
-
-
-.svg-book {
-	height: auto;
-	float: left;
-	left: 400px;
-	width: 340px;
-	margin-top: -30px;
-}
-
-.svg-scale {
-	height: auto;
-	float: right;
-	right: 27%;
-	width: 280px;
-	margin-top: 10px;
-}
-
-.GetStartedIcons {
-	position: absolute;
-}
-
-#GetStartedText {
+	padding-top: 40px;
 	
+	height: 80px;
+	min-width: 650px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2%;
+}
+
+#SubmitInvoice:hover {
+	background-color: #1ABC9C;
+	cursor: hand;
+	cursor: pointer;
 }
