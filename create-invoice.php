@@ -6,17 +6,18 @@
 // [TECH] 	- Submit a draft successfully to database (un-paid)
 // [TECH] 	- Create confirmation when invoice is submitted (Prompt: Print invoice / Create another invoice )
 // [TECH] 	- Create printable invoice (seperate link) which fits A4 page
-// [TECH] 	- Auto-complete search for either First or Surname from database (typeahead.js w/ JSON results from SQLite)
 // [BUG] 	- Limit the QTY field to 1 whole digit
 // [BUG] 	- Check if QTY field is blank, if so: clear the TOTAL field
 // [BUG] 	- Restrict numerical fields to only accept digits
-// [UI] 	- Increase font size for watermark
 // [UI]		- Lay out the following fields: 'Sub Total' , 'GST' , 'Total'
 // [UI]		- When submitting, prompt for 'Has this invoice been paid yet?' (slide down animation)
-// [UI]		- Create flat-style button for submitting the invoice
 // [UI]		- Lay out 'Adjust your stock' button at top-right of the page
 // [UI]		- Light-grey hightlight when hovering over stock items
 // [TECH]	- Ensure IE10+ compatibility
+// [UI]		- Different colours/icons to indicate type of wine
+// [BUG]	- Restrict typing in TOTAL field
+// ---------------------------------------------
+// [TECH]	- Auto fill e-mail address with customer selection
 // ---------------------------------------------
 
 date_default_timezone_set('Australia/Perth');
@@ -24,15 +25,25 @@ $TodayDate = date('d/m/Y');
 $CounterDisplay = 0;
 $CounterStart = 0;
 
-$db = new PDO('sqlite:carldenn.sqlite') or die("Oh no, cannot connect to database!");
-$result = $db->query("SELECT * FROM Products WHERE IsActive='TRUE'");
+$Database = new PDO('sqlite:carldenn.sqlite') or die("Oh no, cannot connect to database!");
+$WineList = $Database->query("SELECT * FROM Products WHERE IsActive='TRUE'");
+$CustomerNames = $Database->query("SELECT FirstName FROM Customers");
 
-foreach($result as $row){
-	$ProductID[$CounterStart] = $row['ProductID'];
+foreach($WineList as $row) {
+	$ProductID[$CounterStart] 	= $row['ProductID'];
 	$DisplayName[$CounterStart] = $row['DisplayName'];
-	$SellPrice[$CounterStart] = $row['SellPrice'];
+	$SellPrice[$CounterStart] 	= $row['SellPrice'];
 	$CounterStart++;
 }
+
+$CounterStart = 0;
+
+foreach($CustomerNames as $row) {
+	$FirstName[$CounterStart]	= $row['FirstName'];
+	$CounterStart++;
+}
+
+$JSONFirstName = json_encode($FirstName);
 
 ?>
 <html>
@@ -40,11 +51,15 @@ foreach($result as $row){
 
 <title>Carldenn Wines</title>
 <link rel="stylesheet" href="css/style.css" type="text/css">
+<link rel="stylesheet" href="css/typeahead.css" type="text/css">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/datepicker/flat.css" type='text/css'>
+
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/jquery.watermark.min.js"></script>
+<script src="js/jquery.numeric.js"></script>
+<script src="js/typeahead.min.js"></script>
 
 <script>
 
@@ -61,7 +76,11 @@ $(function() {
 	$("#CustomerEmail").watermark(" Customer's e-mail address");
 });
 
-function gather() {
+function GetData() {
+
+
+	$("#SubmitInvoice").animate({top: 30}, 200);
+	$("#HasInvoiceBeenPaid").delay(300).toggle(0);
 	
 	var str = $("form").serialize();
 	
@@ -73,7 +92,6 @@ function gather() {
 			console.log(data);
 		}
 	});
-	
 };
 
 </script>
@@ -88,8 +106,8 @@ function gather() {
 <span id="Title">Carldenn Wines</span>
 <input type="text" id="DateDisplay" name="Date" value="<? echo $TodayDate; ?>"> 
 
-<input type="text" name="CustomerName" id="CustomerName"> 
-<input type="text" name="CustomerEmail" id="CustomerEmail">
+<input type="text" id="CustomerName">
+<input type="text" id="CustomerEmail">
 
 <table border=0 id="Stock">
 
@@ -113,7 +131,14 @@ foreach($ProductID as $value) {
 }
 
 ?>
+
 <script>
+
+// Auto-complete using typeahead.js library
+$('input#CustomerName').typeahead({
+	name: 'customer',
+	local: <? print_r($JSONFirstName) ?>
+});
 
 $('.Quantity, .Sell').keyup(function() {
 	subTotal = 0;
@@ -145,12 +170,22 @@ $('.Quantity, .Sell').keyup(function() {
 	});
 	
 });
+
+$("span#InvoicePaidYes").click(function() {
+	alert("fuck you!");
+	//("#HasInvoiceBeenPaid").fadeOut("slow");
+});
 	
 </script>
 
 </table>
 
-<div id="SubmitInvoice" onclick="gather()">CREATE AN INVOICE</div>
+<div id="HasInvoiceBeenPaid">
+Has this invoice been paid? <br>
+<span id="InvoicePaidYes">Yes</span> - <span id="InvoicePaidNo">No</span>
+</div>
+
+<div id="SubmitInvoice" onclick="GetData()">CREATE AN INVOICE</div>
 
 </form>
 

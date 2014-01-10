@@ -22,4 +22,3 @@ $Email		= $Data[3];
 	// 4. Submit SQL query. Return invoice number.
 	
 ?>
-
